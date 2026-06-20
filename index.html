@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Uma história</title>
+
+<style>
+body{
+margin:0;
+font-family:Arial;
+background: radial-gradient(circle at top,#0b0f2a,#05060f);
+color:white;
+overflow-x:hidden;
+}
+
+/* ESTRELAS */
+.stars::before{
+content:"";
+position:fixed;
+width:200%;
+height:200%;
+box-shadow:
+0 0 2px #fff,
+80px 120px #fff,
+200px 300px #fff,
+400px 600px #fff,
+600px 900px #fff;
+animation:move 120s linear infinite;
+}
+
+@keyframes move{
+from{transform:translateY(0);}
+to{transform:translateY(-1000px);}
+}
+
+/* INTRO */
+#intro{
+position:fixed;
+width:100%;
+height:100%;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+background:rgba(0,0,0,0.75);
+text-align:center;
+padding:20px;
+}
+
+button{
+margin-top:15px;
+padding:12px 20px;
+border:none;
+border-radius:10px;
+background:#6c5ce7;
+color:white;
+cursor:pointer;
+}
+
+/* EASTER EGGS */
+.easter{
+margin-top:25px;
+font-size:14px;
+opacity:0.6;
+}
+
+.easter p{
+cursor:pointer;
+margin:8px 0;
+}
+
+/* MAIN */
+#main{
+display:none;
+padding:20px;
+position:relative;
+z-index:2;
+}
+
+.chapter{
+background:rgba(255,255,255,0.05);
+margin:10px 0;
+padding:15px;
+border-radius:10px;
+cursor:pointer;
+opacity:0.5;
+transition:0.3s;
+}
+
+.chapter.active{
+opacity:1;
+}
+
+/* READER */
+#reader{
+margin-top:20px;
+background:rgba(0,0,0,0.4);
+padding:15px;
+border-radius:10px;
+min-height:120px;
+white-space:pre-line;
+}
+
+/* POPUP */
+.popup{
+position:fixed;
+bottom:30px;
+left:50%;
+transform:translateX(-50%);
+background:rgba(0,0,0,0.85);
+padding:12px 16px;
+border-radius:12px;
+animation:fade 0.5s;
+z-index:999;
+}
+
+@keyframes fade{
+from{opacity:0;transform:translate(-50%,10px);}
+to{opacity:1;transform:translate(-50%,0);}
+}
+</style>
+</head>
+
+<body>
+
+<div class="stars"></div>
+
+<!-- INTRO -->
+<div id="intro">
+
+<h1>Uma história em capítulos</h1>
+<p style="opacity:0.7">Toque nos segredos escondidos ✨</p>
+
+<button onclick="start()">Entrar</button>
+
+<div class="easter">
+<p onclick="msg(1)">✨ clique aqui</p>
+<p onclick="msg(2)">🌙 clique aqui também</p>
+<p onclick="msg(3)">💫 segredo escondido</p>
+</div>
+
+</div>
+
+<!-- MAIN -->
+<div id="main">
+
+<div class="chapter active" onclick="openChapter(1)">Capítulo 1</div>
+<div class="chapter" onclick="openChapter(2)" id="c2">Capítulo 2</div>
+<div class="chapter" onclick="openChapter(3)" id="c3">Capítulo 3</div>
+<div class="chapter" onclick="openChapter(4)" id="c4">Capítulo 4</div>
+<div class="chapter" onclick="openChapter(5)" id="c5">Capítulo 5</div>
+<div class="chapter" onclick="openChapter(6)" id="c6">Capítulo 6</div>
+<div class="chapter" onclick="openChapter(7)" id="c7">Capítulo 7</div>
+<div class="chapter" onclick="openChapter(8)" id="c8">Carta Final</div>
+
+<div id="reader"></div>
+
+</div>
+
+<script>
+
+let current = parseInt(localStorage.getItem("p") || "1");
+
+const texts = {
+
+1:`Ela se tornou alguém muito importante pra mim.
+Não de forma rápida, mas com o tempo.
+Com respeito, conversa e sentimentos que cresceram devagar.`,
+
+2:`Eu entendi que existem dias difíceis.
+Dores, cólicas, cansaço, estresse e momentos em que o silêncio é necessário.
+
+E isso não diminui ninguém.
+Só mostra humanidade.`,
+
+3:`Eu errei.
+Pressionei, insisti e não respeitei alguns momentos.
+Hoje eu entendo isso melhor.`,
+
+4:`A distância pesa.
+Tem dias que o silêncio incomoda mais do que qualquer coisa.`,
+
+5:`O passado dela deixou marcas.
+E eu respeito isso.
+Não quero ser mais uma dor.`,
+
+6:`Eu estou aprendendo a mudar.
+Não com palavras, mas com atitudes.`,
+
+7:`A saudade existe.
+Mas eu preciso aprender a respeitar mais do que sentir.`,
+
+8:`Eu não quero prender ninguém.
+Só quero ser alguém melhor do que fui ontem.`
+};
+
+function start(){
+document.getElementById("intro").style.display="none";
+document.getElementById("main").style.display="block";
+unlock();
+}
+
+function openChapter(n){
+if(n>current) return;
+
+type(texts[n]);
+
+if(n===current && current<8){
+current++;
+localStorage.setItem("p",current);
+unlock();
+}
+
+if(n===8){
+setTimeout(finalScreen,3000);
+}
+}
+
+function unlock(){
+for(let i=2;i<=current;i++){
+let el=document.getElementById("c"+i);
+if(el) el.classList.add("active");
+}
+}
+
+function type(text){
+let i=0;
+let el=document.getElementById("reader");
+el.innerHTML="";
+
+let t=setInterval(()=>{
+el.innerHTML+=text.charAt(i);
+i++;
+if(i>=text.length) clearInterval(t);
+},18);
+}
+
+/* EASTER EGGS */
+function msg(n){
+const m={
+1:"Que o dia dela fique um pouco mais leve.",
+2:"Que a noite dela seja mais calma.",
+3:"Você é mais forte do que imagina."
+};
+
+let p=document.createElement("div");
+p.className="popup";
+p.innerText=m[n];
+
+document.body.appendChild(p);
+
+setTimeout(()=>p.remove(),4000);
+}
+
+/* FINAL */
+function finalScreen(){
+let d=document.createElement("div");
+d.style="position:fixed;top:0;left:0;width:100%;height:100%;background:black;display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:999;text-align:center;padding:20px;";
+d.innerHTML=`
+<h1>Fim</h1>
+<p>Tudo o que fica é mudança.</p>
+<button onclick="restart()">Recomeçar</button>
+`;
+document.body.appendChild(d);
+}
+
+function restart(){
+localStorage.clear();
+location.reload();
+}
+
+</script>
+
+</body>
+</html>
